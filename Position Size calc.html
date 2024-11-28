@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Brokerage Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #333;
+            color: #f0f0f0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.light-mode {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .light-mode .calculator {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .light-mode label {
+        color: #333;
+        }
+        .light-mode input, .light-mode select {
+            background-color: white;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+        .light-mode .result {
+            border-top: 1px solid #ddd;
+        }
+        .light-mode .result-row {
+            color: #333;
+        }
+        .light-mode .other-charges-details {
+        background-color: #f0f0f0;  
+        border: 1px solid #ddd;  
+        }
+        .light-mode .other-charges-toggle {
+        color: #1a73e8;  
+        }
+        .calculator {
+            background-color: #444;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(255,255,255,0.1);
+            position: relative;
+        }
+        .mode-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .mode-toggle:hover {
+            transform: scale(1.2);
+        }
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+            color: #f0f0f0;
+        }
+        input, select {
+            width: 150px;
+            padding: 5px;
+            margin: 5px;
+            background-color: #555;
+            color: #f0f0f0;
+            border: 1px solid #666;
+        }
+        .result {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #666;
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            color: #f0f0f0;
+        }
+        .positive { color: #4CAF50; }
+        .negative { color: #FF5722; }
+        
+        .other-charges-details {
+            display: none;
+            background-color: #555;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .other-charges-toggle {
+            cursor: pointer;
+            color: #1a73e8;
+            text-decoration: underline;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <div class="calculator">
+        <button class="mode-toggle" onclick="toggleDarkMode()">🌓</button>
+        
+        <h2>Trading Brokerage Calculator</h2>
+        
+        <div class="input-group">
+            <label>Buy Price (₹):</label>
+            <input type="number" id="buyPrice" step="0.01">
+        </div>
+        
+        <div class="input-group">
+            <label>Sell Price (₹):</label>
+            <input type="number" id="sellPrice" step="0.01">
+        </div>
+        
+        <div class="input-group">
+            <label>Quantity:</label>
+            <input type="number" id="quantity">
+        </div>
+        
+        <div class="input-group">
+            <label>Brokerage per order:</label>
+            <select id="brokerage">
+                <option value="0">0</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+
+        <div class="result">
+            <div class="result-row">
+                <span>Gross P&L:</span>
+                <span id="grossPnl">₹0.00</span>
+            </div>
+            <div class="result-row">
+                <span>Brokerage:</span>
+                <span id="totalBrokerage">₹0.00</span>
+            </div>
+            <div class="result-row">
+                <span>
+                    Other Charges: 
+                    <span class="other-charges-toggle" onclick="toggleOtherChargesDetails()">View Breakdown</span>
+                </span>
+                <span id="otherCharges">₹0.00</span>
+            </div>
+            <div class="other-charges-details" id="otherChargesDetails">
+                <div class="result-row">
+                    <span>STT (0.025%):</span>
+                    <span id="sttCharges">₹0.00</span>
+                </div>
+                <div class="result-row">
+                    <span>Transaction Charges (0.00297%):</span>
+                    <span id="transactionCharges">₹0.00</span>
+                </div>
+                <div class="result-row">
+                    <span>SEBI Charges (0.0001%):</span>
+                    <span id="sebiCharges">₹0.00</span>
+                </div>
+                <div class="result-row">
+                    <span>Stamp Duty (0.003%):</span>
+                    <span id="stampDutyCharges">₹0.00</span>
+                </div>
+                <div class="result-row">
+                    <span>Clearing Charges:</span>
+                    <span id="clearingCharges">₹0.00</span>
+                </div>
+                <div class="result-row">
+                    <span>GST (18%):</span>
+                    <span id="gstCharges">₹0.00</span>
+                </div>
+            </div>
+            <div class="result-row">
+                <strong>NET P&L:</strong>
+                <strong id="netPnl">₹0.00</strong>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateCharges() {
+            const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
+            const sellPrice = parseFloat(document.getElementById('sellPrice').value) || 0;
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            const brokeragePerOrder = parseFloat(document.getElementById('brokerage').value) || 0;
+
+            const buyValue = buyPrice * quantity;
+            const sellValue = sellPrice * quantity;
+            const grossPnl = sellValue - buyValue;
+            
+            // Brokerage
+            const totalBrokerage = brokeragePerOrder * 2;
+
+            // Other Charges
+            const stt = sellValue * 0.00025; // STT on sell side
+            const transactionCharges = (buyValue + sellValue) * 0.0000297; // both sides
+            const sebiCharges = (buyValue + sellValue) * 0.000001; // both sides
+            const stampDuty = buyValue * 0.00003; // buy side
+            const clearingCharges = 0; // Clearing charges
+            const gst = (totalBrokerage + transactionCharges + sebiCharges) * 0.18;
+
+            const totalOtherCharges = stt + transactionCharges + sebiCharges + stampDuty + clearingCharges + gst;
+            const netPnl = grossPnl - totalBrokerage - totalOtherCharges;
+
+            // Update display
+            document.getElementById('grossPnl').textContent = `₹${grossPnl.toFixed(2)}`;
+            document.getElementById('totalBrokerage').textContent = `₹${totalBrokerage.toFixed(2)}`;
+            document.getElementById('otherCharges').textContent = `₹${totalOtherCharges.toFixed(2)}`;
+            document.getElementById('netPnl').textContent = `₹${netPnl.toFixed(2)}`;
+
+            // Update other charges breakdown
+            document.getElementById('sttCharges').textContent = `₹${stt.toFixed(2)}`;
+            document.getElementById('transactionCharges').textContent = `₹${transactionCharges.toFixed(2)}`;
+            document.getElementById('sebiCharges').textContent = `₹${sebiCharges.toFixed(2)}`;
+            document.getElementById('stampDutyCharges').textContent = `₹${stampDuty.toFixed(2)}`;
+            document.getElementById('clearingCharges').textContent = `₹${clearingCharges.toFixed(2)}`;
+            document.getElementById('gstCharges').textContent = `₹${gst.toFixed(2)}`;
+
+            // Add color coding
+            document.getElementById('grossPnl').className = grossPnl >= 0 ? 'positive' : 'negative';
+            document.getElementById('netPnl').className = netPnl >= 0 ? 'positive' : 'negative';
+        }
+
+        function toggleOtherChargesDetails() {
+            const detailsElement = document.getElementById('otherChargesDetails');
+            detailsElement.style.display = detailsElement.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+        }
+
+        // Add event listeners for instant updates
+        document.getElementById('buyPrice').addEventListener('input', calculateCharges);
+        document.getElementById('sellPrice').addEventListener('input', calculateCharges);
+        document.getElementById('quantity').addEventListener('input', calculateCharges);
+        document.getElementById('brokerage').addEventListener('change', calculateCharges);
+    </script>
+</body>
+</html>
